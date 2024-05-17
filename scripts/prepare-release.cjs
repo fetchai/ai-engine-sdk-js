@@ -40,6 +40,18 @@ const main = async () => {
     path.resolve(distRoot, "package.json"),
     JSON.stringify(newPackageJson, null, 2),
   );
+
+  // copy the README.md file
+  await fs.promises.copyFile(
+    path.resolve(projectRoot, "README.md"),
+    path.resolve(distRoot, "README.md"),
+  );
+
+  // copy the LICENSE file
+  await fs.promises.copyFile(
+    path.resolve(projectRoot, "LICENSE"),
+    path.resolve(distRoot, "LICENSE"),
+  );
 };
 
 main();
