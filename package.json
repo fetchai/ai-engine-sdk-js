@@ -1,0 +1,49 @@
+{
+  "name": "ai-engine-sdk",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/src/index.js",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint --max-warnings 0",
+    "fmt": "prettier --write .",
+    "fmt:check": "prettier --check .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "files": [
+    "*"
+  ],
+  "imports": {
+    "ai-engine-sdk": ".",
+    "ai-engine-sdk/*": "./src/*"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    },
+    "./*": {
+      "types": "./dist/src/*.d.ts",
+      "default": "./dist/src/*.js"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^9.2.0",
+    "@types/node": "^20.12.12",
+    "@types/uuid": "^9.0.8",
+    "eslint": "^9.2.0",
+    "globals": "^15.2.0",
+    "prettier": "^3.2.5",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^7.9.0"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2",
+    "uuid": "^9.0.1"
+  }
+}
