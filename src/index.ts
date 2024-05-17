@@ -12,7 +12,7 @@ import {
   isApiAgentMessageMessage,
   isApiContextJson,
   isApiTaskList,
-} from "ai-engine-sdk/types/api";
+} from "./types/api";
 
 import {
   AgentMessage,
@@ -20,9 +20,9 @@ import {
   Message,
   TaskOption,
   TaskSelectionMessage,
-} from "ai-engine-sdk/types/messages";
+} from "./types/messages";
 
-export * from "ai-engine-sdk/types/messages";
+export * from "./types/messages";
 
 const defaultApiBaseUrl = "https://agentverse.ai";
 
