@@ -1,5 +1,5 @@
 {
-  "name": "ai-engine-sdk",
+  "name": "@fetchai/ai-engine-sdk",
   "version": "0.0.1",
   "description": "",
   "main": "dist/src/index.js",
@@ -8,14 +8,15 @@
     "lint": "eslint --max-warnings 0",
     "fmt": "prettier --write .",
     "fmt:check": "prettier --check .",
+    "prepare": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "files": [
     "*"
   ],
   "imports": {
-    "ai-engine-sdk": ".",
-    "ai-engine-sdk/*": "./src/*"
+    "@fetchai/ai-engine-sdk": ".",
+    "@fetchai/ai-engine-sdk/*": "./src/*"
   },
   "exports": {
     ".": {

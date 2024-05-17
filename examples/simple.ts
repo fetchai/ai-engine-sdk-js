@@ -4,7 +4,7 @@ import {
   isAiEngineMessage,
   isConfirmationMessage,
   isTaskSelectionMessage,
-} from "ai-engine-sdk";
+} from "@fetchai/ai-engine-sdk";
 
 const apiBaseUrl = "https://engine-staging.sandbox-london-b.fetch-ai.com";
 const apiKey = process.env["API_KEY"] ?? "";

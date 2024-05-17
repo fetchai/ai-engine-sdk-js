@@ -9,10 +9,10 @@
     /* Visit https://aka.ms/tsconfig to read more about this file */
 
     "paths": {
-      "ai-engine-sdk": [
+      "@fetchai/ai-engine-sdk": [
         "src/index.ts"
       ],
-      "ai-engine-sdk/*": ["src/*"],
+      "@fetchai/ai-engine-sdk/*": ["src/*"],
     },
 
     /* Projects */
