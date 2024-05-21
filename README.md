@@ -26,7 +26,7 @@
 
 ## 📦 Getting Started
 
-```
+```bash
 npm install @fetchai/ai-engine-sdk
 ```
 
