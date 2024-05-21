@@ -19,7 +19,7 @@
 
 ## ⭐️ Features
 
-- Access to latest AI Engine features 
+- Access to latest AI Engine features
 - Simple and intuitive API
 - Support for TypeScript and JavaScript
 - Can run in the browser or via node
@@ -42,4 +42,3 @@ await session.start("Find a holiday destination");
 
 ...
 ```
-
