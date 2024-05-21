@@ -9,4 +9,4 @@ pnpm run build:release
 
 # publish the package
 cd dist
-pnpm publish --access public
+pnpm publish --access public --no-git-checks
