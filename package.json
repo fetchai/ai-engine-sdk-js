@@ -26,8 +26,8 @@
     }
   },
   "keywords": [],
-  "author": "",
-  "license": "MIT",
+  "author": "Fetch.ai Team <npm@fetch.ai>",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@eslint/js": "^9.2.0",
     "@types/node": "^20.12.12",

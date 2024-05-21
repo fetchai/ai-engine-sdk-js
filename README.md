@@ -42,3 +42,11 @@ await session.start("Find a holiday destination");
 
 ...
 ```
+
+## ✨ Contributing
+
+All contributions are welcome! Remember, contribution includes not only code, but any help with docs or issues raised by other developers. See our [contribution guidelines](https://github.com/fetchai/ai-engine-sdk-js/blob/main/CONTRIBUTING.md) for more details.
+
+### ❓ Issues, Questions, and Discussions
+
+We use [GitHub Issues](https://github.com/fetchai/ai-engine-sdk-js/issues) for tracking requests and bugs, and [GitHub Discussions](https://github.com/fetchai/ai-engine-sdk-js/discussions) for general questions and discussion.
