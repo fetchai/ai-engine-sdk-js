@@ -34,11 +34,16 @@ export interface ConfirmationMessage extends BaseMessage {
   payload: Record<string, any>;
 }
 
+export interface StopMessage extends BaseMessage {
+  type: "stop";
+}
+
 export type Message =
   | TaskSelectionMessage
   | AgentMessage
   | AiEngineMessage
-  | ConfirmationMessage;
+  | ConfirmationMessage
+  | StopMessage;
 
 export const isTaskSelectionMessage = (m: Message): m is TaskSelectionMessage =>
   m.type === "task_selection";
@@ -51,3 +56,6 @@ export const isAgentMessage = (m: Message): m is AgentMessage =>
 
 export const isConfirmationMessage = (m: Message): m is ConfirmationMessage =>
   m.type === "confirmation";
+
+export const isStopMessage = (m: Message): m is StopMessage =>
+  m.type === "stop";

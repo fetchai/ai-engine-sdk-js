@@ -11,6 +11,7 @@ import {
   isApiAgentJsonMessage,
   isApiAgentMessageMessage,
   isApiContextJson,
+  isApiStopMessage,
   isApiTaskList,
 } from "./types/api";
 
@@ -21,8 +22,34 @@ import {
   TaskOption,
   TaskSelectionMessage,
 } from "./types/messages";
+import {
+  CustomModel,
+  DefaultModelId,
+  DefaultModelIds,
+  getModelId,
+  getModelName,
+  KnownModelId,
+} from "@fetchai/ai-engine-sdk/types/models";
 
 export * from "./types/messages";
+
+export interface CreditBalance {
+  totalCredits: number;
+  usedCredits: number;
+  availableCredits: number;
+}
+
+export interface Model {
+  id: string;
+  name: string;
+  credits: number;
+}
+
+export interface FunctionGroup {
+  uuid: string;
+  name: string;
+  isPrivate: boolean;
+}
 
 const defaultApiBaseUrl = "https://agentverse.ai";
 
@@ -50,7 +77,7 @@ async function makeApiRequest<RESP, REQ = null>(
   }
 
   const resp = await response.json();
-  console.log("API", resp);
+  // console.log("API", resp);
   return resp;
 }
 
@@ -133,6 +160,19 @@ export class Session {
     });
   }
 
+  async rejectConfirmation(
+    confirmation: ConfirmationMessage,
+    reason: string,
+  ): Promise<void> {
+    await this._submitMessage({
+      type: "user_message",
+      session_id: this.sessionId,
+      message_id: v4().toString().toLowerCase(),
+      referral_id: confirmation.id,
+      user_message: reason,
+    });
+  }
+
   async getMessages(): Promise<Message[]> {
     let queryParams = "";
     if (this._messages.length > 0) {
@@ -151,11 +191,15 @@ export class Session {
     for (const item of response.agent_response) {
       const message: ApiMessage = JSON.parse(item);
 
-      console.log("RESP", message);
+      // it is possible that a message may be delivered multiple times, therefore we need to filter out duplicates
+      if (this._messageIds.has(message.message_id)) {
+        continue;
+      }
+
       if (isApiAgentJsonMessage(message)) {
-        console.log("AGENT-JSON", message.agent_json);
+        // console.log("AGENT-JSON", message.agent_json);
         if (isApiTaskList(message.agent_json)) {
-          console.log("TASK-LIST", message.agent_json.options);
+          // console.log("TASK-LIST", message.agent_json.options);
 
           newMessages.push({
             id: message.message_id,
@@ -167,7 +211,7 @@ export class Session {
             }),
           });
         } else if (isApiContextJson(message.agent_json)) {
-          console.log("CONTEXT-JSON", message.agent_json.context_json);
+          // console.log("CONTEXT-JSON", message.agent_json.context_json);
 
           newMessages.push({
             id: message.message_id,
@@ -178,10 +222,10 @@ export class Session {
             payload: message.agent_json.context_json.args,
           });
         } else {
-          console.log("UNKNOWN-JSON:", message);
+          console.error("UNKNOWN-JSON:", message);
         }
       } else if (isApiAgentInfoMessage(message)) {
-        console.log("AGENT-JSON", message.agent_info);
+        // console.log("AGENT-JSON", message.agent_info);
 
         newMessages.push({
           id: message.message_id,
@@ -190,7 +234,7 @@ export class Session {
           text: message.agent_info,
         });
       } else if (isApiAgentMessageMessage(message)) {
-        console.log("AGENT-JSON", message.agent_message);
+        // console.log("AGENT-JSON", message.agent_message);
 
         newMessages.push({
           id: message.message_id,
@@ -198,8 +242,15 @@ export class Session {
           timestamp: new Date(message.timestamp),
           text: message.agent_message,
         });
+      } else if (isApiStopMessage(message)) {
+        console.error("STOP:", message);
+        newMessages.push({
+          id: message.message_id,
+          timestamp: new Date(message.timestamp),
+          type: "stop",
+        });
       } else {
-        console.log("UNKNOWN:", message);
+        console.error("UNKNOWN:", message);
       }
 
       // store the message (if we have not already seen it)
@@ -232,17 +283,112 @@ export class AiEngine {
     this._apiKey = apiKey;
   }
 
-  async createSession(): Promise<Session> {
-    const functionGroup = "e504eabb-4bc7-458d-aa8c-7c3748f8952c";
+  async getFunctionGroups(): Promise<FunctionGroup[]> {
+    const [publicGroups, privateGroups] = await Promise.all([
+      this.getPublicFunctionGroups(),
+      this.getPrivateFunctionGroups(),
+    ]);
 
+    return [...privateGroups, ...publicGroups];
+  }
+
+  private async getPublicFunctionGroups(): Promise<FunctionGroup[]> {
+    return await makeApiRequest<FunctionGroup[]>(
+      this._apiBaseUrl,
+      this._apiKey,
+      "GET",
+      "/v1beta1/function-groups/public/",
+      null,
+    );
+  }
+
+  private async getPrivateFunctionGroups(): Promise<FunctionGroup[]> {
+    return await makeApiRequest<FunctionGroup[]>(
+      this._apiBaseUrl,
+      this._apiKey,
+      "GET",
+      "/v1beta1/function-groups/",
+      null,
+    );
+  }
+
+  async getCredits(): Promise<CreditBalance> {
+    const r = await makeApiRequest<{
+      total_credit: number;
+      used_credit: number;
+      available_credit: number;
+    }>(
+      this._apiBaseUrl,
+      this._apiKey,
+      "GET",
+      "/v1beta1/engine/credit/info",
+      null,
+    );
+
+    return {
+      totalCredits: r.total_credit,
+      usedCredits: r.used_credit,
+      availableCredits: r.available_credit,
+    };
+  }
+
+  async getModels(): Promise<Model[]> {
+    const pendingCredits: Promise<number>[] = [];
+
+    const models: Model[] = [];
+    for (const modelId of DefaultModelIds) {
+      pendingCredits.push(this.getModelCredits(modelId));
+
+      models.push({
+        id: modelId,
+        name: getModelName(modelId),
+        credits: 0,
+      });
+    }
+
+    const credits = await Promise.all(pendingCredits);
+
+    // sanity check
+    if (credits.length !== models.length) {
+      throw new Error("Credit count mismatch");
+    }
+
+    for (let i = 0; i < models.length; i++) {
+      models[i]!!.credits = credits[i]!!;
+    }
+
+    return models;
+  }
+
+  async getModelCredits(model: KnownModelId | CustomModel): Promise<number> {
+    const modelId = getModelId(model);
+
+    const r = await makeApiRequest<{ model_tokens: Record<string, number> }>(
+      this._apiBaseUrl,
+      this._apiKey,
+      "GET",
+      `/v1beta1/engine/credit/remaining_tokens?models=${modelId}`,
+      null,
+    );
+
+    return r.model_tokens[modelId] ?? 0;
+  }
+
+  async createSession(
+    functionGroup: string,
+    opts?: {
+      email?: string;
+      model?: KnownModelId | string;
+    },
+  ): Promise<Session> {
     const response = await makeApiRequest<
       ApiNewSessionResponse,
       ApiNewSessionRequest
     >(this._apiBaseUrl, this._apiKey, "POST", "/v1beta1/engine/chat/sessions", {
-      email: "",
+      email: opts?.email ?? "",
       functionGroup,
       preferencesEnabled: false,
-      requestModel: "talkative-01",
+      requestModel: opts?.model ?? DefaultModelId,
     });
 
     return new Session(

@@ -1,68 +1,120 @@
+import * as readline from "node:readline";
+
 import {
   AiEngine,
   isAgentMessage,
   isAiEngineMessage,
   isConfirmationMessage,
+  isStopMessage,
   isTaskSelectionMessage,
 } from "@fetchai/ai-engine-sdk";
 
-const apiBaseUrl = "https://engine-staging.sandbox-london-b.fetch-ai.com";
-const apiKey = process.env["API_KEY"] ?? "";
+const apiKey = process.env["AV_API_KEY"] ?? "";
 
 const snooze = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
 const main = async () => {
-  const aiEngine = new AiEngine(apiKey, { apiBaseUrl });
+  const rl = readline.promises.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
 
-  const session = await aiEngine.createSession();
-  await session.start("Find a holiday destination");
+  const aiEngine = new AiEngine(apiKey);
 
-  let emptyCount = 0;
-  while (emptyCount < 12) {
-    const messages = await session.getMessages();
-    if (messages.length === 0) {
-      emptyCount++;
-    } else {
-      emptyCount = 0;
-    }
-
-    console.log("MSGS", messages);
-
-    for (const message of messages) {
-      if (isTaskSelectionMessage(message)) {
-        console.log("TASK", message);
-        await session.submitTaskSelection(message, [message.options[1]!]);
-      } else if (isAgentMessage(message)) {
-        console.log("AGENT", message);
-
-        if (message.text.includes("please provide the request id")) {
-          await session.submitResponse(message, "14");
-        } else if (message.text.includes("please provide your email address")) {
-          await session.submitResponse(message, "edward.fitzgerald@fetch.ai");
-        } else if (message.text.includes("please provide your full name")) {
-          await session.submitResponse(message, "Edward FitzGerald");
-        } else if (message.text.includes("please provide your response")) {
-          await session.submitResponse(message, "I am happy with the result");
-        }
-      } else if (isAiEngineMessage(message)) {
-        console.log("ENGINE", message);
-      } else if (isConfirmationMessage(message)) {
-        console.log("CONFIRM", message);
-        await session.submitConfirmation(message);
-      } else {
-        console.log("???", message);
-      }
-    }
-
-    // console.log("Chilling for 3 seconds...");
-    await snooze(1200);
+  const functionGroups = await aiEngine.getFunctionGroups();
+  const publicGroup = functionGroups.find((g) => g.name === "Fetch Verified");
+  if (publicGroup === undefined) {
+    throw new Error('Could not find "Public" function group.');
   }
 
-  await session.delete();
+  const session = await aiEngine.createSession(
+    "523a7194-214f-48fd-b5be-b0e953cc35a3",
+  );
+  await session.start(await rl.question("What is your objective: "));
 
-  console.log(aiEngine);
-  console.log(session);
+  try {
+    let emptyCount = 0;
+    let sessionEnded = false;
+    while (emptyCount < 12) {
+      const messages = await session.getMessages();
+      if (messages.length === 0) {
+        emptyCount++;
+      } else {
+        emptyCount = 0;
+      }
+
+      for (const message of messages) {
+        if (isTaskSelectionMessage(message)) {
+          console.log("Please select a task from the list below:");
+          console.log("");
+          for (const option of message.options) {
+            console.log(`${option.key}: ${option.title}`);
+          }
+
+          const optionIndex = parseInt(
+            await rl.question("\nEnter task number: "),
+          );
+
+          // check the index
+          if (optionIndex < 0 || optionIndex >= message.options.length) {
+            throw new Error("Invalid task number");
+          }
+
+          await session.submitTaskSelection(message, [
+            message.options[optionIndex]!,
+          ]);
+        } else if (isAgentMessage(message)) {
+          console.log("Agent: ", message.text);
+
+          const response = await rl.question("User (enter to skip): ");
+          if (response === "exit") {
+            break;
+          }
+
+          if (response !== "") {
+            await session.submitResponse(message, response);
+          }
+        } else if (isAiEngineMessage(message)) {
+          console.log("Engine:", message.text);
+        } else if (isConfirmationMessage(message)) {
+          console.log("Confirm:", message.payload);
+
+          const response = await rl.question(
+            "\nPress enter to confirm, otherwise explain issue:\n",
+          );
+
+          if (response === "") {
+            await session.submitConfirmation(message);
+          } else {
+            await session.rejectConfirmation(message, response);
+          }
+        } else if (isStopMessage(message)) {
+          console.log("\nSession has ended");
+          sessionEnded = true;
+          break;
+        } else {
+          console.error("???", message);
+        }
+      }
+
+      // if the session has concluded then break
+      if (sessionEnded) {
+        break;
+      }
+
+      // console.log("Chilling for 3 seconds...");
+      await snooze(1200);
+    }
+  } catch (e) {
+    console.error("Error", e);
+  } finally {
+    // clean up the session
+    await session.delete();
+
+    // stop the readline interface
+    rl.close();
+  }
 };
 
 main();
