@@ -28,9 +28,7 @@ const main = async () => {
     throw new Error('Could not find "Public" function group.');
   }
 
-  const session = await aiEngine.createSession(
-    "523a7194-214f-48fd-b5be-b0e953cc35a3",
-  );
+  const session = await aiEngine.createSession(publicGroup.uuid);
   await session.start(await rl.question("What is your objective: "));
 
   try {
@@ -85,6 +83,7 @@ const main = async () => {
           );
 
           if (response === "") {
+            console.log("Sending confirmation...");
             await session.submitConfirmation(message);
           } else {
             await session.rejectConfirmation(message, response);
@@ -103,7 +102,6 @@ const main = async () => {
         break;
       }
 
-      // console.log("Chilling for 3 seconds...");
       await snooze(1200);
     }
   } catch (e) {

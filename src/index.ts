@@ -76,9 +76,7 @@ async function makeApiRequest<RESP, REQ = null>(
     );
   }
 
-  const resp = await response.json();
-  // console.log("API", resp);
-  return resp;
+  return await response.json();
 }
 
 export class Session {
@@ -197,10 +195,7 @@ export class Session {
       }
 
       if (isApiAgentJsonMessage(message)) {
-        // console.log("AGENT-JSON", message.agent_json);
         if (isApiTaskList(message.agent_json)) {
-          // console.log("TASK-LIST", message.agent_json.options);
-
           newMessages.push({
             id: message.message_id,
             type: "task_selection",
@@ -211,8 +206,6 @@ export class Session {
             }),
           });
         } else if (isApiContextJson(message.agent_json)) {
-          // console.log("CONTEXT-JSON", message.agent_json.context_json);
-
           newMessages.push({
             id: message.message_id,
             type: "confirmation",
@@ -225,8 +218,6 @@ export class Session {
           console.error("UNKNOWN-JSON:", message);
         }
       } else if (isApiAgentInfoMessage(message)) {
-        // console.log("AGENT-JSON", message.agent_info);
-
         newMessages.push({
           id: message.message_id,
           type: "ai-engine",
@@ -234,8 +225,6 @@ export class Session {
           text: message.agent_info,
         });
       } else if (isApiAgentMessageMessage(message)) {
-        // console.log("AGENT-JSON", message.agent_message);
-
         newMessages.push({
           id: message.message_id,
           type: "agent",
@@ -243,7 +232,6 @@ export class Session {
           text: message.agent_message,
         });
       } else if (isApiStopMessage(message)) {
-        console.error("STOP:", message);
         newMessages.push({
           id: message.message_id,
           timestamp: new Date(message.timestamp),
