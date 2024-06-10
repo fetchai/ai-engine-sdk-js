@@ -342,7 +342,7 @@ export class AiEngine {
     }
 
     for (let i = 0; i < models.length; i++) {
-      models[i]!!.credits = credits[i]!!;
+      models[i]!.credits = credits[i]!;
     }
 
     return models;
