@@ -32,6 +32,8 @@ npm install @fetchai/ai-engine-sdk
 
 ### Using the Chat API
 
+Before you start to integrate the AI Engine into your app, you might want to get familiar with [agent functions](https://fetch.ai/docs/guides/agents/intermediate/agent-functions).
+
 #### Creating the AIEngine client object
 ```javascript
 import { AiEngine } from '@fetchai/ai-engine-sdk';
@@ -39,7 +41,7 @@ import { AiEngine } from '@fetchai/ai-engine-sdk';
 const aiEngine = new AiEngine(apiKey, { apiBaseUrl });
 ```
 
-#### Querying the id of the function group where our to-be-used function(s) belong 
+#### Querying the id of the function group where our to-be-used function(s) belong
 ```javascript
 const functionGroups = await aiEngine.getFunctionGroups();
 const functionGroupId = functionGroups.find((g) => g.name === "Fetch Verified");
