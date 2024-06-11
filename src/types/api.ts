@@ -1,6 +1,6 @@
 export interface ApiNewSessionRequest {
   email: string;
-  functionGroup: string;
+  functionGroup: string | null;
   preferencesEnabled: boolean;
   requestModel: string;
 }
@@ -12,7 +12,8 @@ export interface ApiNewSessionResponse {
   last_message_timestamp: string | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   messages: any[];
-  bucket_id: string | null;
+  // bucket_id: string | null;
+  function_group: string;
   model: string;
   remaining_tokens: number;
   status: string | null;
@@ -130,8 +131,18 @@ export interface ApiAgentMessageMessage {
   agent_message: string;
 }
 
+export interface ApiStopMessage {
+  type: "stop";
+  session_id: string;
+  message_id: string;
+  timestamp: string;
+  score: number;
+  referral_id: string;
+}
+
 export type ApiMessage =
   | ApiAgentJsonMessage
+  | ApiStopMessage
   | ApiAgentInfoMessage
   | ApiAgentMessageMessage;
 
@@ -146,3 +157,6 @@ export const isApiAgentInfoMessage = (
 export const isApiAgentMessageMessage = (
   m: ApiMessage,
 ): m is ApiAgentMessageMessage => m.type === "agent_message";
+
+export const isApiStopMessage = (m: ApiMessage): m is ApiStopMessage =>
+  m.type === "stop";
