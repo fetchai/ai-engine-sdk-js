@@ -34,7 +34,7 @@ npm install @fetchai/ai-engine-sdk
 Before you start to integrate the AI Engine into your app, you might want to get familiar with [agent functions](https://fetch.ai/docs/guides/agents/intermediate/agent-functions).
 
 #### Creating the AIEngine client object
-To find out how to generate an <code>apiKey</code> check out the documentation regarding [Agentverse API keys](https://fetch.ai/docs/guides/apis/agent-function-creation-apis). 
+To find out how to generate an <code>apiKey</code> check out the documentation regarding [Agentverse API keys](https://fetch.ai/docs/guides/apis/agent-service-creation-apis). 
 ```javascript
 import { AiEngine } from '@fetchai/ai-engine-sdk';
 
