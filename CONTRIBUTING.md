@@ -14,13 +14,17 @@ Contributions to this repository are welcome. As a contributor, here are the gui
 ## <a name="coc"></a> Code of Conduct
 
 <!-- markdown-link-check-disable -->
+
 Please read and follow our [Code of Conduct](CODE_OF_CONDUCT.md).
+
 <!-- markdown-link-check-enable -->
 
 ## <a name="question"></a> Question or Problem?
 
 <!-- markdown-link-check-disable -->
+
 Please use [GitHub Discussions](https://github.com/fetchai/ai-engine-sdk-js/discussions) for support related questions and general discussions. Do NOT open issues as they are for bug reports and feature requests. This is because:
+
 <!-- markdown-link-check-enable -->
 
 - Questions and answers stay available for public viewing so your question/answer might help someone else.
@@ -33,8 +37,8 @@ Even better, you can [submit a Pull Request](#submit-pr) with a fix.
 
 ## <a name="feature"></a> Missing a Feature?
 
-You can *request* a new feature by [submitting a feature request issue](#submit-issue).
-If you would like to *implement* a new feature:
+You can _request_ a new feature by [submitting a feature request issue](#submit-issue).
+If you would like to _implement_ a new feature:
 
 - For a **Major Feature**, first [open an issue](#submit-issue) and outline your proposal so that it can be discussed.
 - **Small Features** can be crafted and directly [submitted as a Pull Request](#submit-pr).
@@ -44,11 +48,13 @@ If you would like to *implement* a new feature:
 ### <a name="submit-issue"></a> Submitting an Issue
 
 <!-- markdown-link-check-disable -->
+
 Before you submit an issue, please search the [issue tracker](https://github.com/fetchai/ai-engine-sdk-js/issues). An issue for your problem might already exist and the discussion might inform you of workarounds readily available.
 
 For bug reports, it is important that we can reproduce and confirm it. For this, we need you to provide a minimal reproduction instruction (this is part of the bug report issue template).
 
 You can file new issues by selecting from our [new issue templates](https://github.com/fetchai/ai-engine-sdk-js/issues/new/choose) and filling out the issue template.
+
 <!-- markdown-link-check-enable -->
 
 ### <a name="submit-pr"></a> Submitting a Pull Request (PR)
@@ -57,16 +63,18 @@ Before you submit your Pull Request (PR) consider the following guidelines:
 
 1. All Pull Requests should be based off of and opened against the `main` branch.
 
-    <!-- markdown-link-check-disable -->
+<!-- markdown-link-check-disable -->
+
 2. Search [Existing PRs](https://github.com/fetchai/ai-engine-sdk-js/pulls) for an open or closed PR that relates to your submission.
    You don't want to duplicate existing efforts.
     <!-- markdown-link-check-enable -->
 
 3. Be sure that an issue exists describing the problem you're fixing, or the design for the feature you'd like to add.
 
-    <!-- markdown-link-check-disable -->
+<!-- markdown-link-check-disable -->
+
 4. [Fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) the [repository](https://github.com/fetchai/ai-engine-sdk-js).
-    <!-- markdown-link-check-enable -->
+<!-- markdown-link-check-enable -->
 
 5. In your forked repository, make your changes in a new git branch created off of the `main` branch.
 
@@ -74,9 +82,10 @@ Before you submit your Pull Request (PR) consider the following guidelines:
 
 7. Follow our [coding rules](#rules).
 
-    <!-- markdown-link-check-disable -->
+<!-- markdown-link-check-disable -->
+
 8. Run all tests and checks locally, as described in the [development guide](DEVELOPING.md), and ensure they pass. This saves CI hours and ensures you only commit clean code.
-    <!-- markdown-link-check-enable -->
+<!-- markdown-link-check-enable -->
 
 9. Commit your changes using a descriptive commit message that follows our [commit message conventions](#commit).
 
@@ -87,7 +96,9 @@ Before you submit your Pull Request (PR) consider the following guidelines:
 #### Reviewing a Pull Request
 
 <!-- markdown-link-check-disable -->
+
 The repository maintainers reserve the right not to accept pull requests from community members who haven't been good citizens of the community. Such behavior includes not following our [code of conduct](CODE_OF_CONDUCT.md) and applies within or outside the managed channels.
+
 <!-- markdown-link-check-enable -->
 
 When you contribute a new feature, the maintenance burden is transferred to the core team. This means that the benefit of the contribution must be compared against the cost of maintaining the feature.
@@ -111,13 +122,14 @@ After your pull request is merged, you can safely delete your branch and pull th
 To ensure consistency throughout the source code, keep these rules in mind as you are working:
 
 <!-- markdown-link-check-disable -->
+
 - All code must pass our code quality checks (linters, formatters, etc). See the [development guide](DEVELOPING.md) section for more detail.
 <!-- markdown-link-check-enable -->
 
-- All features **must be tested** via unit-tests and if applicable integration-tests. Bug fixes also require tests, because the presence of bugs usually indicates insufficient test coverage. Tests help to: 
+- All features **must be tested** via unit-tests and if applicable integration-tests. Bug fixes also require tests, because the presence of bugs usually indicates insufficient test coverage. Tests help to:
 
-    1. Prove that your code works correctly, and
-    2. Guard against future breaking changes and lower the maintenance cost. 
+  1. Prove that your code works correctly, and
+  2. Guard against future breaking changes and lower the maintenance cost.
 
 - All public features **must be documented**.
 - Keep API compatibility in mind when you change any code. Above version `1.0.0`, breaking changes can happen across versions with different left digit. Below version `1.0.0`, they can happen across versions with different middle digit. Reviewers of your pull request will comment on any API compatibility issues.
@@ -126,16 +138,16 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 
 This project uses Conventional Commits to generate release notes and to determine versioning. Please follow the [Conventional Commits v1.0.0](https://www.conventionalcommits.org/en/v1.0.0/). The commit types must be one of the following:
 
-  - **chore**: Commits that don't directly add features, fix bugs, or refactor code, but rather maintain the project or its surrounding processes.
-  - **ci**: Changes to our CI configuration files and scripts
-  - **docs**: Changes to the documentation
-  - **feat**: A new feature
-  - **fix**: A bug fix
-  - **refactor**: A code change that neither fixes a bug nor adds a feature
-  - **test**: Adding missing tests or correcting existing tests
-  - **revert**: Reverts a previous commit that introduced an issue or unintended change. This essentially undoes a previous commit.
-  - **style**: Changes that only affect code formatting or style, without affecting functionality. This ensures consistency and readability of the codebase.
-  - **perf**: Changes that improve the performance of the project.
+- **chore**: Commits that don't directly add features, fix bugs, or refactor code, but rather maintain the project or its surrounding processes.
+- **ci**: Changes to our CI configuration files and scripts
+- **docs**: Changes to the documentation
+- **feat**: A new feature
+- **fix**: A bug fix
+- **refactor**: A code change that neither fixes a bug nor adds a feature
+- **test**: Adding missing tests or correcting existing tests
+- **revert**: Reverts a previous commit that introduced an issue or unintended change. This essentially undoes a previous commit.
+- **style**: Changes that only affect code formatting or style, without affecting functionality. This ensures consistency and readability of the codebase.
+- **perf**: Changes that improve the performance of the project.
 
 Commit messages should adhere to this standard and be of the form:
 
