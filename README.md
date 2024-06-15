@@ -71,7 +71,7 @@ await session.start("Find a holiday destination");
 
 #### Querying new messages
 
-You might want to query new messages regularly with a <code>setTimeout</code> or <code>setInterval</code> to check for new <code>Message</code> (Check out [examples/simple.ts](examples/simple.ts) for a complete example use case of the SDK):
+You might want to query new messages regularly with a <code>setTimeout</code> or <code>setInterval</code> to check for new <code>Message</code> (Check out [examples/simple.ts](https://github.com/fetchai/ai-engine-sdk-js/blob/main/examples/simple.ts) for a complete example use case of the SDK):
 
 ```javascript
 const messages = await session.getMessages();
@@ -105,7 +105,7 @@ After finishing the conversation with AI Engine you can delete the session like 
 await session.delete();
 ```
 
-If you would like to check out a complete example on how to integrate AI Engine into your app, feel free to checkout [examples/simple.ts](examples/simple.ts).
+If you would like to check out a complete example on how to integrate AI Engine into your app, feel free to checkout [examples/simple.ts](https://github.com/fetchai/ai-engine-sdk-js/blob/main/examples/simple.ts).
 
 ## ✨ Contributing
 
