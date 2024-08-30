@@ -29,6 +29,13 @@ export interface ApiStartMessage {
   bucket_id: string;
 }
 
+export interface ApiUserMessageExecuteFunctions {
+    type: "execute_functions";
+    functions: string[];
+    objective: string;
+    context: string;
+}
+
 export interface ApiSelectedTasks {
   type: "task_list";
   selection: number[];
@@ -53,7 +60,8 @@ export interface ApiUserMessageMessage {
 export type ApiMessagePayload =
   | ApiStartMessage
   | ApiUserJsonMessage
-  | ApiUserMessageMessage;
+  | ApiUserMessageMessage
+  | ApiUserMessageExecuteFunctions;
 
 export interface ApiSubmitMessage {
   payload: ApiMessagePayload;
