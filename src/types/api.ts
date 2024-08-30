@@ -30,10 +30,10 @@ export interface ApiStartMessage {
 }
 
 export interface ApiUserMessageExecuteFunctions {
-    type: "execute_functions";
-    functions: string[];
-    objective: string;
-    context: string;
+  type: "execute_functions";
+  functions: string[];
+  objective: string;
+  context: string;
 }
 
 export interface ApiSelectedTasks {

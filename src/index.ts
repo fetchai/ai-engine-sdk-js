@@ -261,7 +261,11 @@ export class Session {
     );
   }
 
-  async execute_function(functionIds: string[], objective: string, context: string): Promise<void> {
+  async execute_function(
+    functionIds: string[],
+    objective: string,
+    context: string,
+  ): Promise<void> {
     // You should not start a session before executing this one
     await this._submitMessage({
       type: "execute_functions",
@@ -270,7 +274,6 @@ export class Session {
       context: context,
     });
   }
-
 }
 export class AiEngine {
   private readonly _apiBaseUrl: string;
