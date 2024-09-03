@@ -80,6 +80,10 @@ async function makeApiRequest<RESP, REQ = null>(
 }
 
 export class Session {
+  /**
+   * Represents a session with an API, managing messages and interactions within a specific function group or functions.
+   */
+
   private readonly _apiBaseUrl: string;
   private readonly _apiKey: string;
   private _messages: ApiMessage[] = [];
@@ -87,6 +91,12 @@ export class Session {
   readonly sessionId: string;
   readonly functionGroup: string;
 
+  /**
+   * @param {string} apiBaseUrl - The base URL for the API.
+   * @param {string} apiKey - The API key for authentication.
+   * @param {string} sessionId - The unique identifier for the session.
+   * @param {string} functionGroup - The function group associated with the session.
+   */
   constructor(
     apiBaseUrl: string,
     apiKey: string,
@@ -99,6 +109,12 @@ export class Session {
     this.functionGroup = functionGroup;
   }
 
+  /**
+   * Submits a message to the API for the current session.
+   * @private
+   * @param {ApiMessagePayload} payload - The payload to submit.
+   * @returns {Promise<void>}
+   */
   private async _submitMessage(payload: ApiMessagePayload) {
     await makeApiRequest<null, ApiSubmitMessage>(
       this._apiBaseUrl,
@@ -111,6 +127,12 @@ export class Session {
     );
   }
 
+  /**
+   *  Starts a new session by submitting an initial message to the ai-engine API.
+   * @param {string} objective - The primary goal of the session.
+   * @param {string} [context] - Additional context for the session.
+   * @returns {Promise<void>}
+   */
   async start(objective: string, context?: string): Promise<void> {
     await this._submitMessage({
       type: "start",
@@ -122,6 +144,12 @@ export class Session {
     });
   }
 
+  /**
+   * Submits message with the selected task to the ai-engine API.
+   * @param {TaskSelectionMessage} selection - The task selection message to submit.
+   * @param {TaskOption[]} options - The selected task options.
+   * @returns {Promise<void>}
+   */
   async submitTaskSelection(
     selection: TaskSelectionMessage,
     options: TaskOption[],
@@ -138,6 +166,12 @@ export class Session {
     });
   }
 
+  /**
+   * Send an answer to a question asked by the agent.
+   * @param {AgentMessage} query - The agent's message to respond to.
+   * @param {string} response - The user's response.
+   * @returns {Promise<void>}
+   */
   async submitResponse(query: AgentMessage, response: string): Promise<void> {
     await this._submitMessage({
       type: "user_message",
@@ -148,6 +182,11 @@ export class Session {
     });
   }
 
+  /**
+   * Submits a confirmation message for an agent's question to the ai-engine AP.
+   * @param {ConfirmationMessage} confirmation - The confirmation message to submit.
+   * @returns {Promise<void>}
+   */
   async submitConfirmation(confirmation: ConfirmationMessage): Promise<void> {
     await this._submitMessage({
       type: "user_message",
@@ -158,6 +197,13 @@ export class Session {
     });
   }
 
+  /**
+   * Rejects a confirmation with a given reason and submits the response to the API.
+   * The counterpart of `submit_confirmation`.
+   * @param {ConfirmationMessage} confirmation - The confirmation message to reject.
+   * @param {string} reason - The reason for rejecting the confirmation.
+   * @returns {Promise<void>}
+   */
   async rejectConfirmation(
     confirmation: ConfirmationMessage,
     reason: string,
@@ -171,6 +217,10 @@ export class Session {
     });
   }
 
+  /**
+   * Retrieves new messages for the session from the API.
+   * @returns {Promise<Message[]>} A list of new messages parsed from the API response.
+   */
   async getMessages(): Promise<Message[]> {
     let queryParams = "";
     if (this._messages.length > 0) {
@@ -251,6 +301,10 @@ export class Session {
     return newMessages;
   }
 
+  /**
+   * Deletes the current session associated with the current session_id in the ai-engine API.
+   * @returns {Promise<void>}
+   */
   async delete(): Promise<void> {
     await makeApiRequest<void>(
       this._apiBaseUrl,
@@ -261,6 +315,13 @@ export class Session {
     );
   }
 
+  /**
+   * Executes a set of functions within the session.
+   * @param {string[]} functionIds - The IDs of the functions to execute.
+   * @param {string} objective - The objective of the function execution.
+   * @param {string} context - Additional context for the function execution.
+   * @returns {Promise<void>}
+   */
   async execute_function(
     functionIds: string[],
     objective: string,
@@ -275,6 +336,7 @@ export class Session {
     });
   }
 }
+
 export class AiEngine {
   private readonly _apiBaseUrl: string;
   private readonly _apiKey: string;
