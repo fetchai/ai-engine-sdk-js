@@ -79,11 +79,10 @@ async function makeApiRequest<RESP, REQ = null>(
   return await response.json();
 }
 
+/**
+ * Represents a session with an API, managing messages and interactions within a specific function group or functions.
+ */
 export class Session {
-  /**
-   * Represents a session with an API, managing messages and interactions within a specific function group or functions.
-   */
-
   private readonly _apiBaseUrl: string;
   private readonly _apiKey: string;
   private _messages: ApiMessage[] = [];
